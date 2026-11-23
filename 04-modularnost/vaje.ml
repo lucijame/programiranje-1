@@ -1,5 +1,5 @@
 (*----------------------------------------------------------------------------*
- # Abstrakcija
+ # Modularnost
 [*----------------------------------------------------------------------------*)
 
 (*----------------------------------------------------------------------------*
@@ -20,17 +20,10 @@ module type NAT = sig
 
   val eq  : t -> t -> bool
   val zero : t
-  val one : t
-  val ( ++ ) : t -> t -> t
-  val ( ** ) : t -> t -> t
-  val ( -- ) : t -> t -> t
-  val to_int : t-> int
-  val of_int : int -> t
   (* Dodajte manjkajoče! *)
   (* val to_int : t -> int *)
   (* val of_int : int -> t *)
 end
-(*te stvari zgoraj moraš zapisati in jih potem definirati v modulu kar delaš spodaj*)
 
 (*----------------------------------------------------------------------------*
  Napišite implementacijo modula `Nat_int`, ki zgradi modul s signaturo `NAT`,
@@ -43,18 +36,8 @@ end
 module Nat_int : NAT = struct
 
   type t = int
-  let eq x y = e = y
+  let eq x y = failwith "later"
   let zero = 0
-  let one = 1
-  let ( ++ ) x y = x + y
-  (*lahko tudi tako :*)
-  let ( ** ) = ( * )
-  let ( -- ) x y =
-    if y >= x then zero
-    else x - y
-
-  let to_int x = x
-  let of_int x = x
   (* Dodajte manjkajoče! *)
 
 end
@@ -70,39 +53,11 @@ end
 
 module Nat_peano : NAT = struct
 
-  type t = 
-    |Zero
-    |Succ of t
-  let rec eq x y = 
-    match x, y with
-    |(Zero, Zero) -> true
-    |(Succ m, Succ n) -> eq m n
-    |_ -> false (*seprav da bo Zero, Succ _ in obratno*)
-  let rec ( ++ ) x y =
-    match x with
-      | Zero -> y
-      | Succ m -> m ++ Succ(y)
-      (*-> Succ (m ++ y)*)
-  let rec ( ** ) x y =
-    match x with
-      | Zero -> Zero
-      | Succ m -> y ++ (m ** y)
-  let rec ( -- ) x y =
-    match x, y with
-      | m, Zero -> m
-      | Succ m, Succ n -> m -- n
-      | _ -> Zero
-  let rec of_int x =
-    if x <= 0 then Zero (*negativne slikamo v 0*)
-    else Succ (of_int (x - 1))
-  let rec to_int x =
-    match x with
-      | Zero -> 0
-      | Succ m -> 1 + to_int m
+  type t = unit (* To morate spremeniti! *)
+  let eq x y = failwith "later"
+  let zero = () (* To morate spremeniti! *)
+  (* Dodajte manjkajoče! *)
 
-  let zero = Zero
-  let one = Succ Zero
- 
 end
 
 (*----------------------------------------------------------------------------*
@@ -127,19 +82,11 @@ module type CALC = sig
 end
 
 module Nat_calculations (N: NAT) : CALC with type t := N.t = struct
-  (*napišeš v obliki modula ki ga sprejme kot argument torej vse zapišeš z uporabo funkcij
-  ki si jih definirala za NAT*)
-  let factorial n =
-    if (N.eq n N.zero) then N.one
-    else N.( ** ) n (factorial N.( -- ) n N.one) 
-  
-  open N (*da loh namest N.zero napises Zero pa da funkcije navadn kličeš*)
-  let sum_100 = 
-    let rec sum_first n =
-      if n = zero then zero
-      else n ++ (sum_first n -- one)
-    in
-    sum_first (of_int 100)
+  let factorial _ = (* To morate spremeniti! *)
+    N.zero
+
+  let sum_100 = (* To morate spremeniti! *)
+    N.zero
 end
 
 (*----------------------------------------------------------------------------*
@@ -152,8 +99,6 @@ end
 
 module Nat_int_calc = Nat_calculations (Nat_int)
 module Nat_peano_calc = Nat_calculations (Nat_peano)
-
-let fact_5_peano = 
 
 
 (* val sum_100_int : int = 5050 *)
